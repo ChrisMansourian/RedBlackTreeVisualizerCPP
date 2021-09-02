@@ -3,7 +3,10 @@
 #include <iostream>
 #include <Windows.h>
 #include <stack>
+#include <queue>
 #include <vector>
+#include <math.h>
+#include <conio.h>
 
 /// <summary>
 /// Class to Create a Left Leaning Red Black Tree
@@ -36,6 +39,8 @@ private:
 	std::shared_ptr<RedBlackNode<T>> Fixup(std::shared_ptr<RedBlackNode<T>> Node);
 	std::shared_ptr<RedBlackNode<T>> Minimum(std::shared_ptr<RedBlackNode<T>> node);
 	bool Contains(T Value, std::shared_ptr<RedBlackNode<T>> Node);
+	void VisualizeHelper();
+
 public:
 	size_t Count;
 	std::shared_ptr<RedBlackNode<T>> Root;
@@ -48,6 +53,9 @@ public:
 	std::shared_ptr<RedBlackNode<T>> RotateRight(std::shared_ptr<RedBlackNode<T>> Node);
 	bool Remove(T Value);
 	bool Contains(T Value);
+
+	void Visualize();
+
 
 	void Clear();
 };
@@ -349,3 +357,79 @@ std::shared_ptr<RedBlackNode<T>> RedBlackTree<T>::Minimum(std::shared_ptr<RedBla
 	return Node;
 }
 
+
+template<typename T>
+void RedBlackTree<T>::Visualize()
+{
+	system("CLS");
+	VisualizeHelper();
+
+	HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hcon, 7);
+	std::cout << std::endl;
+	//system("Color 07");//white text
+	//system("Color 04");//red text
+}
+
+template<typename T>
+void RedBlackTree<T>::VisualizeHelper()
+{
+	auto current = Root;
+	int depth = std::ceil(std::log2(Count));
+	int x = 0;
+	if (Count == 0)
+	{
+		return;
+	}
+	std::queue<int> xCords{};
+	xCords.push(std::pow(2, depth)*3);
+	std::queue <std::shared_ptr<RedBlackNode<T>>> Nodes{};
+	Nodes.push(Root);
+	while (Nodes.size() > 0)
+	{
+		if (Nodes.front() == nullptr)
+		{
+			xCords.pop();
+			Nodes.pop();
+			continue;
+		}
+		int xCord = xCords.front();
+		xCords.pop();
+		bool shouldGoDown = false;
+		if (xCords.size() == 0 || xCords.front() < xCord)
+		{
+			shouldGoDown = true;
+		}
+		while (x < xCord)
+		{
+			std::cout << " ";
+			x++;
+		}
+		if (Nodes.front()->IsRed)
+		{
+
+			HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hcon, 4);//red for the red nodes
+		}
+		else
+		{
+
+			HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hcon, 7);//white for the black nodes
+		}
+		std::cout << Nodes.front()->Value;
+		Nodes.push(Nodes.front()->Left);
+		Nodes.push(Nodes.front()->Right);
+		xCords.push(xCord - std::pow(2, depth-1) *3);
+		xCords.push(xCord + std::pow(2, depth-1) *3);
+		//xCords.pop();
+		Nodes.pop();
+		if (shouldGoDown)
+		{
+			x = 0;
+			std::cout << std::endl;
+			depth--;
+		}
+	}
+
+}

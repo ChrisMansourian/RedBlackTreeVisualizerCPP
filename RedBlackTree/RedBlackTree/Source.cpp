@@ -8,7 +8,7 @@ int main()
 {
 	RedBlackTree<int> tree{};
 
-	for (size_t i = 0; i < 20; i++)
+	/*for (size_t i = 0; i < 20; i++)
 	{
 		tree.Add(i);
 		std::cout << IsValid(tree) << std::endl;
@@ -37,6 +37,27 @@ int main()
 
 		std::cout << IsValid(tree) << std::endl;
 	}
+	tree.Visualize();
+	int test;
+	std::cin >> test;*/
+
+	int choice = GetMenuChoice();
+	while (choice != 3)
+	{
+		if (choice == 1)
+		{
+			tree.Add(GetIntInput());
+		}
+		else if (choice == 2)
+		{
+			tree.Remove(GetIntInput());
+		}
+		tree.Visualize();
+		choice = GetMenuChoice();
+
+	}
+
+
 
 	return 0;
 }
